@@ -1,0 +1,73 @@
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+export const Footer: React.FC = () => {
+  return (
+    <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          <div className="col-span-1 md:col-span-1">
+            <Link to="/" className="flex items-center space-x-2 mb-6">
+              <i className="fas fa-shield-alt text-blue-500 text-2xl"></i>
+              <span className="text-2xl font-bold text-white">BimaLink</span>
+            </Link>
+            <p className="text-slate-400 leading-relaxed mb-6">
+              Empowering Kenyans with transparent, affordable, and accessible insurance solutions from trusted providers.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="hover:text-blue-400 transition"><i className="fab fa-facebook-f"></i></a>
+              <a href="#" className="hover:text-blue-400 transition"><i className="fab fa-twitter"></i></a>
+              <a href="#" className="hover:text-blue-400 transition"><i className="fab fa-instagram"></i></a>
+              <a href="#" className="hover:text-blue-400 transition"><i className="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="text-white font-bold mb-6">Quick Links</h4>
+            <ul className="space-y-4">
+              <li><Link to="/products" className="hover:text-blue-400">All Products</Link></li>
+              <li><Link to="/compare" className="hover:text-blue-400">Compare Plans</Link></li>
+              <li><Link to="/blog" className="hover:text-blue-400">Insurance News</Link></li>
+              <li><Link to="/community" className="hover:text-blue-400">Community Wall</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-6">Insurance Types</h4>
+            <ul className="space-y-4">
+              <li><Link to="/products" className="hover:text-blue-400">Motor Insurance</Link></li>
+              <li><Link to="/products" className="hover:text-blue-400">Medical Cover</Link></li>
+              <li><Link to="/products" className="hover:text-blue-400">Life Insurance</Link></li>
+              <li><Link to="/products" className="hover:text-blue-400">Business Cover</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-6">Newsletter</h4>
+            <p className="text-slate-400 mb-4">Get the latest insurance updates in your inbox.</p>
+            <div className="flex">
+              <input 
+                type="email" 
+                placeholder="Email address" 
+                className="bg-slate-800 border-none rounded-l-lg px-4 py-2 w-full focus:ring-1 focus:ring-blue-500"
+              />
+              <button className="bg-blue-600 text-white rounded-r-lg px-4 py-2 hover:bg-blue-700 transition">
+                <i className="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+          <p>&copy; {new Date().getFullYear()} BimaLink Kenya. All rights reserved.</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="#" className="hover:text-white">Privacy Policy</a>
+            <a href="#" className="hover:text-white">Terms of Service</a>
+            <a href="#" className="hover:text-white">Cookie Policy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};

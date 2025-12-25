@@ -1,0 +1,8 @@
+{
+  "name": "BimaLink Kenya - Premium Insurance Brokerage",
+  "description": "A comprehensive insurance comparison and lead generation platform for the Kenyan market, featuring real-time product comparison, community engagement, and AI-powered insights.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
