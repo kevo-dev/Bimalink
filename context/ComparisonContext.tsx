@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Product } from '@/types';
 import Link from 'next/link';
 
@@ -13,9 +13,31 @@ interface ComparisonContextType {
 
 const ComparisonContext = createContext<ComparisonContextType | undefined>(undefined);
 
-// Fix: Use React.FC to correctly type children for the provider, resolving TS error in layout.tsx line 27
+const LOCAL_STORAGE_KEY = 'bimalink_comparison_products';
+
 export const ComparisonProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load from local storage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (saved) {
+      try {
+        setSelectedProducts(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved comparison products", e);
+      }
+    }
+    setIsInitialized(true);
+  }, []);
+
+  // Save to local storage whenever selectedProducts changes
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedProducts));
+    }
+  }, [selectedProducts, isInitialized]);
 
   const toggleComparison = (product: Product) => {
     setSelectedProducts(prev => {

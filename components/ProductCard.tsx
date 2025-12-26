@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onCompareToggle, isSelected }) => {
   return (
-    <div className={`bg-white rounded-2xl border ${isSelected ? 'border-blue-500 ring-2 ring-blue-500/10' : 'border-slate-200'} shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col`}>
+    <div className={`bg-white rounded-2xl border transition-all duration-500 flex flex-col hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 ${isSelected ? 'border-blue-500 ring-4 ring-blue-500/10 shadow-xl' : 'border-slate-200 shadow-sm'}`}>
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="bg-slate-50 rounded-xl p-2 w-16 h-16 flex items-center justify-center border border-slate-100">

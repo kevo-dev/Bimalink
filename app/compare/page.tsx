@@ -8,13 +8,21 @@ import { useComparison } from '@/context/ComparisonContext';
 export default function ComparePage() {
   const { selectedProducts, clearComparison, toggleComparison } = useComparison();
 
-  const { cheapestId, topRatedId } = useMemo(() => {
-    if (selectedProducts.length < 2) return { cheapestId: null, topRatedId: null };
+  // Find the minimum price and maximum rating among selected products
+  const { cheapestIds, topRatedIds } = useMemo(() => {
+    if (selectedProducts.length === 0) return { cheapestIds: [], topRatedIds: [] };
+    
     const minPrice = Math.min(...selectedProducts.map(p => p.basePrice));
-    const cheapest = selectedProducts.find(p => p.basePrice === minPrice);
+    const cheapest = selectedProducts
+      .filter(p => p.basePrice === minPrice)
+      .map(p => p.id);
+
     const maxRating = Math.max(...selectedProducts.map(p => p.rating));
-    const topRated = selectedProducts.find(p => p.rating === maxRating);
-    return { cheapestId: cheapest?.id || null, topRatedId: topRated?.id || null };
+    const topRated = selectedProducts
+      .filter(p => p.rating === maxRating)
+      .map(p => p.id);
+
+    return { cheapestIds: cheapest, topRatedIds: topRated };
   }, [selectedProducts]);
 
   if (selectedProducts.length === 0) {
@@ -39,7 +47,7 @@ export default function ComparePage() {
   return (
     <div className="bg-slate-50 min-h-screen py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Compare Your Options</h1>
             <p className="text-slate-500 text-lg mt-2">Helping you make the most informed decision for your protection.</p>
@@ -52,25 +60,92 @@ export default function ComparePage() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {selectedProducts.map((p) => (
-            <div key={p.id} className={`relative bg-white rounded-3xl border p-8 flex flex-col ${p.id === cheapestId || p.id === topRatedId ? 'border-blue-500 ring-4 ring-blue-500/5' : 'border-slate-200 shadow-sm'}`}>
-              <button onClick={() => toggleComparison(p)} className="absolute top-6 right-6 text-slate-400 hover:text-red-500"><i className="fas fa-times"></i></button>
-              <img src={p.logo} alt={p.provider} className="h-12 w-auto mb-6 object-contain" />
-              <h3 className="text-xl font-bold mb-1">{p.name}</h3>
-              <p className="text-blue-600 text-sm mb-4">{p.provider}</p>
-              <div className="text-2xl font-black mb-6">KES {p.basePrice.toLocaleString()} <span className="text-sm text-slate-400 font-normal">/ yr</span></div>
-              <div className="space-y-4 flex-grow">
-                {allBenefits.map((benefit, i) => (
-                  <div key={i} className={`flex items-center text-sm ${p.benefits.includes(benefit) ? 'text-slate-700' : 'text-slate-300 line-through'}`}>
-                    <i className={`fas ${p.benefits.includes(benefit) ? 'fa-check text-green-500' : 'fa-times'} mr-2`}></i>
-                    {benefit}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8">
+          {selectedProducts.map((p) => {
+            const isCheapest = cheapestIds.includes(p.id);
+            const isTopRated = topRatedIds.includes(p.id);
+            
+            return (
+              <div 
+                key={p.id} 
+                className={`relative bg-white rounded-3xl border p-8 flex flex-col transition-all duration-500 ${
+                  isCheapest || isTopRated 
+                    ? 'border-blue-500 ring-4 ring-blue-500/5 shadow-2xl scale-[1.02]' 
+                    : 'border-slate-200 shadow-sm'
+                }`}
+              >
+                
+                {/* Feature Badges */}
+                <div className="flex flex-wrap gap-2 absolute -top-4 left-6 z-10">
+                  {isCheapest && (
+                    <span className="bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider px-4 py-2 rounded-full shadow-lg border-2 border-white flex items-center animate-pulse">
+                      <i className="fas fa-tag mr-1.5"></i> Lowest Price
+                    </span>
+                  )}
+                  {isTopRated && (
+                    <span className="bg-amber-500 text-white text-[10px] font-black uppercase tracking-wider px-4 py-2 rounded-full shadow-lg border-2 border-white flex items-center">
+                      <i className="fas fa-crown mr-1.5"></i> Top Rated
+                    </span>
+                  )}
+                </div>
+
+                <button 
+                  onClick={() => toggleComparison(p)} 
+                  className="absolute top-6 right-6 text-slate-400 hover:text-red-500 transition-colors"
+                  title="Remove from comparison"
+                >
+                  <i className="fas fa-times text-lg"></i>
+                </button>
+
+                <div className="h-16 flex items-center mb-6">
+                  <img src={p.logo} alt={p.provider} className="h-full w-auto object-contain" />
+                </div>
+                
+                <h3 className="text-xl font-bold mb-1 text-slate-900">{p.name}</h3>
+                <p className="text-blue-600 text-sm font-semibold mb-6 uppercase tracking-widest">{p.provider}</p>
+                
+                <div className={`rounded-2xl p-6 mb-8 border transition-colors duration-500 ${isCheapest ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100'}`}>
+                  <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isCheapest ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    Annual Premium
+                  </p>
+                  <div className="text-3xl font-black text-slate-900">
+                    KES {p.basePrice.toLocaleString()} 
+                    <span className="text-sm text-slate-400 font-normal ml-1">/ yr</span>
                   </div>
-                ))}
+                </div>
+
+                <div className="space-y-4 flex-grow mb-8">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Included Benefits</p>
+                  {allBenefits.map((benefit, i) => (
+                    <div 
+                      key={i} 
+                      className={`flex items-start text-sm transition-opacity duration-300 ${
+                        p.benefits.includes(benefit) ? 'text-slate-700 font-medium' : 'text-slate-300 line-through opacity-50'
+                      }`}
+                    >
+                      <div className={`mt-1 mr-3 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        p.benefits.includes(benefit) ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'
+                      }`}>
+                        <i className={`fas ${p.benefits.includes(benefit) ? 'fa-check' : 'fa-times'} text-[8px]`}></i>
+                      </div>
+                      {benefit}
+                    </div>
+                  ))}
+                </div>
+                
+                <Link 
+                  href="/contact" 
+                  className={`block text-center py-4 rounded-2xl font-black transition shadow-lg hover:shadow-blue-200 ${
+                    isCheapest 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                      : 'bg-slate-900 text-white hover:bg-blue-600'
+                  }`}
+                >
+                  Select Plan
+                </Link>
               </div>
-              <Link href="/contact" className="mt-8 block text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition">Select Plan</Link>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
