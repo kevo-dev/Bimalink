@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -73,11 +72,11 @@ export default function Home() {
       <section className="py-16 bg-slate-50 border-y">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-8">Trusted by Thousands Across Kenya</h3>
-          <div className="flex flex-wrap justify-center gap-12 grayscale opacity-60">
-             <i className="fas fa-landmark text-4xl"></i>
-             <i className="fas fa-hand-holding-heart text-4xl"></i>
-             <i className="fas fa-building text-4xl"></i>
-             <i className="fas fa-shield-alt text-4xl"></i>
+          <div className="flex flex-wrap justify-center gap-12 grayscale opacity-40">
+             <div className="flex items-center space-x-2"><i className="fas fa-landmark text-3xl"></i><span className="font-bold">KCB Bank</span></div>
+             <div className="flex items-center space-x-2"><i className="fas fa-hand-holding-heart text-3xl"></i><span className="font-bold">Equity</span></div>
+             <div className="flex items-center space-x-2"><i className="fas fa-building text-3xl"></i><span className="font-bold">Britam</span></div>
+             <div className="flex items-center space-x-2"><i className="fas fa-shield-alt text-3xl"></i><span className="font-bold">Jubilee</span></div>
           </div>
         </div>
       </section>

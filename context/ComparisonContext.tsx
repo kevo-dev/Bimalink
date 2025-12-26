@@ -13,7 +13,8 @@ interface ComparisonContextType {
 
 const ComparisonContext = createContext<ComparisonContextType | undefined>(undefined);
 
-export const ComparisonProvider = ({ children }: { children: ReactNode }) => {
+// Fix: Use React.FC to correctly type children for the provider, resolving TS error in layout.tsx line 27
+export const ComparisonProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
 
   const toggleComparison = (product: Product) => {
