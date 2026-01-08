@@ -1,29 +1,57 @@
-
 "use client";
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useComparison } from '@/context/ComparisonContext';
 
+type BenefitSortOrder = 'default' | 'alphabetical';
+type ProductSortOrder = 'default' | 'provider' | 'price';
+
 export default function ComparePage() {
   const { selectedProducts, clearComparison, toggleComparison } = useComparison();
+  const [benefitSort, setBenefitSort] = useState<BenefitSortOrder>('default');
+  const [productSort, setProductSort] = useState<ProductSortOrder>('default');
+
+  // Sorted Products logic
+  const sortedProducts = useMemo(() => {
+    const products = [...selectedProducts];
+    if (productSort === 'provider') {
+      return products.sort((a, b) => a.provider.localeCompare(b.provider));
+    }
+    if (productSort === 'price') {
+      return products.sort((a, b) => a.basePrice - b.basePrice);
+    }
+    return products;
+  }, [selectedProducts, productSort]);
 
   // Find the minimum price and maximum rating among selected products
   const { cheapestIds, topRatedIds } = useMemo(() => {
     if (selectedProducts.length === 0) return { cheapestIds: [], topRatedIds: [] };
     
-    const minPrice = Math.min(...selectedProducts.map(p => p.basePrice));
+    const prices = selectedProducts.map(p => p.basePrice);
+    const minPrice = Math.min(...prices);
     const cheapest = selectedProducts
       .filter(p => p.basePrice === minPrice)
       .map(p => p.id);
 
-    const maxRating = Math.max(...selectedProducts.map(p => p.rating));
+    const ratings = selectedProducts.map(p => p.rating);
+    const maxRating = Math.max(...ratings);
     const topRated = selectedProducts
       .filter(p => p.rating === maxRating)
       .map(p => p.id);
 
     return { cheapestIds: cheapest, topRatedIds: topRated };
   }, [selectedProducts]);
+
+  // Benefit rows logic
+  const allBenefits = useMemo(() => {
+    // Explicitly type benefits as string[] to avoid inference issues where items are typed as unknown
+    const benefits: string[] = Array.from(new Set(selectedProducts.flatMap(p => p.benefits)));
+    if (benefitSort === 'alphabetical') {
+      return benefits.sort((a, b) => a.localeCompare(b));
+    }
+    return benefits;
+  }, [selectedProducts, benefitSort]);
 
   if (selectedProducts.length === 0) {
     return (
@@ -42,12 +70,10 @@ export default function ComparePage() {
     );
   }
 
-  const allBenefits = Array.from(new Set(selectedProducts.flatMap(p => p.benefits)));
-
   return (
     <div className="bg-slate-50 min-h-screen py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
           <div>
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Compare Your Options</h1>
             <p className="text-slate-500 text-lg mt-2">Helping you make the most informed decision for your protection.</p>
@@ -60,8 +86,53 @@ export default function ComparePage() {
           </button>
         </div>
 
+        {/* Sorting Controls */}
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-12 flex flex-wrap gap-6 items-center">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">Sort Products:</span>
+            <div className="flex bg-slate-100 p-1 rounded-xl">
+              <button 
+                onClick={() => setProductSort('default')}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition ${productSort === 'default' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Default
+              </button>
+              <button 
+                onClick={() => setProductSort('provider')}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition ${productSort === 'provider' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Provider
+              </button>
+              <button 
+                onClick={() => setProductSort('price')}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition ${productSort === 'price' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Price
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 border-l pl-6 border-slate-100">
+            <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">Sort Benefits:</span>
+            <div className="flex bg-slate-100 p-1 rounded-xl">
+              <button 
+                onClick={() => setBenefitSort('default')}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition ${benefitSort === 'default' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Original
+              </button>
+              <button 
+                onClick={() => setBenefitSort('alphabetical')}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition ${benefitSort === 'alphabetical' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                A-Z
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8">
-          {selectedProducts.map((p) => {
+          {sortedProducts.map((p) => {
             const isCheapest = cheapestIds.includes(p.id);
             const isTopRated = topRatedIds.includes(p.id);
             
