@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -17,9 +18,9 @@ export default function Home() {
       <section className="relative bg-slate-900 text-white overflow-hidden py-20 lg:py-32">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1454165833767-027ffea9e778?auto=format&fit=crop&q=80&w=2070" 
-            alt="Professional Kenyan Business Environment" 
-            className="w-full h-full object-cover opacity-30"
+            src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2074" 
+            alt="BimaLink Kenya Professional Insurance" 
+            className="w-full h-full object-cover opacity-40"
           />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
