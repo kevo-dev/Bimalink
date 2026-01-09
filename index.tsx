@@ -211,11 +211,11 @@ const HomeView = () => {
   return (
     <div className="animate-in">
       <section className="relative h-[80vh] flex items-center bg-slate-900 overflow-hidden">
-        <div className="absolute inset-0 opacity-40">
+        <div className="absolute inset-0 opacity-30">
           <img 
-            src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2074" 
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=2070" 
             className="w-full h-full object-cover" 
-            alt="Hero"
+            alt="African urban workplace hero image"
           />
         </div>
         <div className="max-w-7xl mx-auto px-4 relative z-10 w-full">
